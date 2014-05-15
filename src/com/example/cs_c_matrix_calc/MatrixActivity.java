@@ -20,12 +20,14 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     private GridView mGvMatrixSecond;
     private MatrixGridAdapter mFirstAdapter;
     private MatrixGridAdapter mSecondAdapter;
-    int size = 2;
+    private int size = 2;
+    private int mOperation = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calc_activity);
+        mOperation = getIntent().getExtras().getInt("operation", -1);
         initView();
         setData();
     }

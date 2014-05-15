@@ -17,7 +17,7 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View view) {
                 startActivity( new Intent(getApplicationContext(),
-                        MatrixActivity.class));
+                        MatrixActivity.class).putExtra("operation",AppConst.ADD));
             }
         });
     }
