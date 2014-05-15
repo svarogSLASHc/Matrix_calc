@@ -1,15 +1,20 @@
 package com.example.cs_c_matrix_calc;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.cs_c_matrix_calc.apapter.MatrixGridAdapter;
+import com.example.cs_c_matrix_calc.apapter.ResultMatrixAdapter;
 
 /**
  * Created by cs_c on 5/15/14.
@@ -86,13 +91,13 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
-
+    int[][] matrixA;
     private void doCalc(){
-        int[][] matrixA = mFirstAdapter.mNumberArray;
+        matrixA = mFirstAdapter.mNumberArray;
         int[][] matrixB = mSecondAdapter.mNumberArray;
         switch (mOperation){
             case AppConst.SUM:
-
+                new ShowResult(this).show();
                 break;
             case AppConst.MINUS:
 
@@ -106,6 +111,24 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
             case AppConst.INVERSE:
 
                 break;
+        }
+    }
+
+    private class ShowResult extends Dialog {
+        GridView resultGrid;
+        public ShowResult(Context context) {
+            super(context,android.R.style.Theme_Translucent_NoTitleBar);
+            setTitle("Result");
+            setContentView(R.layout.dialog_result);
+            resultGrid = (GridView) this.findViewById(R.id.gv_matrix_result_dialog);
+            resultGrid.setNumColumns(size);
+
+        }
+
+        @Override
+        public void show() {
+            super.show();
+            resultGrid.setAdapter( new ResultMatrixAdapter(MatrixActivity.this, size, matrixA));
         }
     }
 }
