@@ -10,20 +10,26 @@
     <Button
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:id="@+id/btn_clear_matrix_activity"
+        android:id="@+id/btn_calc_matrix_activity"
         android:layout_toRightOf="@id/sp_matrix_size_matrix_activity"
+        android:text="Calc"/>
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:id="@+id/btn_clear_matrix_activity"
+        android:layout_toRightOf="@id/btn_calc_matrix_activity"
         android:text="Clear"/>
 
     <GridView
-        android:id="@+id/gv_matrix_first"
+        android:id="@+id/gv_matrix_first_matrix_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/sp_matrix_size_matrix_activity" />
 
     <GridView
-        android:id="@+id/gv_matrix_second"
+        android:id="@+id/gv_matrix_second_matrix_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gv_matrix_first" />
+        android:layout_below="@id/gv_matrix_first_matrix_activity" />
 
 </RelativeLayout>

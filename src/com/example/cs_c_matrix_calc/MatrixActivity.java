@@ -18,6 +18,8 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     private Spinner mMatrixSize;
     private GridView mGvMatrixFirst;
     private GridView mGvMatrixSecond;
+    private MatrixGridAdapter mFirstAdapter;
+    private MatrixGridAdapter mSecondAdapter;
     int size = 2;
 
     @Override
@@ -30,9 +32,10 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
 
     private void initView(){
         findViewById(R.id.btn_clear_matrix_activity).setOnClickListener(this);
+        findViewById(R.id.btn_calc_matrix_activity).setOnClickListener(this);
         mMatrixSize = (Spinner) findViewById(R.id.sp_matrix_size_matrix_activity);
-        mGvMatrixFirst = (GridView) findViewById(R.id.gv_matrix_first);
-        mGvMatrixSecond = (GridView) findViewById(R.id.gv_matrix_second);
+        mGvMatrixFirst = (GridView) findViewById(R.id.gv_matrix_first_matrix_activity);
+        mGvMatrixSecond = (GridView) findViewById(R.id.gv_matrix_second_matrix_activity);
     }
 
     private void setData(){
@@ -61,10 +64,12 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     private void setMatrixSize(){
         mGvMatrixFirst.setNumColumns(size);
         mGvMatrixFirst.setColumnWidth(50);
-        mGvMatrixFirst.setAdapter( new MatrixGridAdapter(this, size));
+        mFirstAdapter = new MatrixGridAdapter(this, size);
+        mGvMatrixFirst.setAdapter( mFirstAdapter);
         mGvMatrixSecond.setNumColumns(size);
         mGvMatrixSecond.setColumnWidth(50);
-        mGvMatrixSecond.setAdapter( new MatrixGridAdapter(this, size));
+        mSecondAdapter = new MatrixGridAdapter(this, size);
+        mGvMatrixSecond.setAdapter(mSecondAdapter);
     }
 
     @Override
@@ -72,6 +77,9 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         switch (view.getId()){
             case R.id.btn_clear_matrix_activity:
                 setMatrixSize();
+                break;
+            case R.id.btn_calc_matrix_activity:
+                Toast.makeText(this, "Calc",Toast.LENGTH_SHORT).show();
                 break;
         }
 
