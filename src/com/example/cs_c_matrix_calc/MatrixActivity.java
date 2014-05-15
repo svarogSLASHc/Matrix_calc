@@ -82,8 +82,30 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.btn_calc_matrix_activity:
                 Toast.makeText(this, "Calc",Toast.LENGTH_SHORT).show();
+                doCalc();
                 break;
         }
+    }
 
+    private void doCalc(){
+        int[][] matrixA = mFirstAdapter.mNumberArray;
+        int[][] matrixB = mSecondAdapter.mNumberArray;
+        switch (mOperation){
+            case AppConst.SUM:
+
+                break;
+            case AppConst.MINUS:
+
+                break;
+            case AppConst.MULTIPLIED:
+
+                break;
+            case AppConst.DIVIDED:
+
+                break;
+            case AppConst.INVERSE:
+
+                break;
+        }
     }
 }
