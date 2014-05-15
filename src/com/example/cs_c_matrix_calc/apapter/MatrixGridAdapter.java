@@ -1,6 +1,8 @@
 package com.example.cs_c_matrix_calc.apapter;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,7 @@ import com.example.cs_c_matrix_calc.R;
 /**
  * Created by cs_c on 5/15/14.
  */
-public class MatrixGridAdapter extends BaseAdapter implements View.OnClickListener, EditText.OnEditorActionListener {
+public class MatrixGridAdapter extends BaseAdapter implements View.OnClickListener{
     private int mMatrixSize;
     private Context mContext;
     public int[][] mNumberArray;
@@ -53,7 +55,6 @@ public class MatrixGridAdapter extends BaseAdapter implements View.OnClickListen
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.item_grid, null);
             holder.etComment = (EditText) convertView.findViewById(R.id.etItem_item_grid);
-            holder.etComment.setOnEditorActionListener(this);
             convertView.setOnClickListener(this);
             convertView.setTag(holder);
         } else {
@@ -61,6 +62,23 @@ public class MatrixGridAdapter extends BaseAdapter implements View.OnClickListen
         }
         holder.etComment.setTag(position);
         holder.etComment.setHint((position/mMatrixSize)+1 + "x" + ((position%mMatrixSize)+1));
+        final ViewHolder finalHolder = holder;
+        holder.etComment.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                int pos = Integer.parseInt(finalHolder.etComment.getTag().toString());
+                mNumberArray[pos/mMatrixSize][pos%mMatrixSize] =
+                        Integer.parseInt(finalHolder.etComment.getText().toString());
+            }
+        });
         return convertView;
     }
 
@@ -69,13 +87,6 @@ public class MatrixGridAdapter extends BaseAdapter implements View.OnClickListen
 
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == 6) {
-
-        }
-        return true;
-    }
 
     public class ViewHolder {
         EditText etComment;
