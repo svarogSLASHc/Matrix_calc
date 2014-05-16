@@ -5,16 +5,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.example.cs_c_matrix_calc.apapter.MatrixGridAdapter;
 import com.example.cs_c_matrix_calc.apapter.ResultMatrixAdapter;
+import com.example.cs_c_matrix_calc.matrix.Matrix;
 
 /**
  * Created by cs_c on 5/15/14.
@@ -37,7 +35,7 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         setData();
     }
 
-    private void initView(){
+    private void initView() {
         findViewById(R.id.btn_clear_matrix_activity).setOnClickListener(this);
         findViewById(R.id.btn_calc_matrix_activity).setOnClickListener(this);
         mMatrixSize = (Spinner) findViewById(R.id.sp_matrix_size_matrix_activity);
@@ -45,10 +43,10 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         mGvMatrixSecond = (GridView) findViewById(R.id.gv_matrix_second_matrix_activity);
     }
 
-    private void setData(){
-        ArrayAdapter<String> adapterSp =new ArrayAdapter<String>(this,
-                                        android.R.layout.simple_spinner_item,
-                                        getResources().getStringArray(R.array.sp_size));
+    private void setData() {
+        ArrayAdapter<String> adapterSp = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.sp_size));
         mMatrixSize.setAdapter(adapterSp);
         mMatrixSize.setPrompt("Matrix size");
         mMatrixSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -68,11 +66,11 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         });
     }
 
-    private void setMatrixSize(){
+    private void setMatrixSize() {
         mGvMatrixFirst.setNumColumns(size);
         mGvMatrixFirst.setColumnWidth(50);
         mFirstAdapter = new MatrixGridAdapter(this, size);
-        mGvMatrixFirst.setAdapter( mFirstAdapter);
+        mGvMatrixFirst.setAdapter(mFirstAdapter);
         mGvMatrixSecond.setNumColumns(size);
         mGvMatrixSecond.setColumnWidth(50);
         mSecondAdapter = new MatrixGridAdapter(this, size);
@@ -81,43 +79,46 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_clear_matrix_activity:
                 setMatrixSize();
                 break;
             case R.id.btn_calc_matrix_activity:
-                Toast.makeText(this, "Calc",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Calc", Toast.LENGTH_SHORT).show();
                 doCalc();
                 break;
         }
     }
-    int[][] matrixA;
-    private void doCalc(){
-        matrixA = mFirstAdapter.mNumberArray;
-        int[][] matrixB = mSecondAdapter.mNumberArray;
-        switch (mOperation){
-            case AppConst.SUM:
-                new ShowResult(this).show();
-                break;
-            case AppConst.MINUS:
 
+    private void doCalc() {
+        double[][] matrixA = mFirstAdapter.mNumberArray;
+        double[][] matrixB = mSecondAdapter.mNumberArray;
+        Matrix A = new Matrix(matrixA);
+        Matrix B = new Matrix(matrixB);
+        double[][] result;
+        switch (mOperation) {
+            case AppConst.SUM:
+                result = A.plus(B).matrix();
+            case AppConst.MINUS:
+                result = A.minus(B).matrix();
                 break;
             case AppConst.MULTIPLIED:
-
+                result = A.mult(B).matrix();
                 break;
             case AppConst.DIVIDED:
-
+                result = A.mult(B.inverse()).matrix();
                 break;
             case AppConst.INVERSE:
-
+                result = A.inverse().matrix();
                 break;
         }
     }
 
     private class ShowResult extends Dialog {
         GridView resultGrid;
+
         public ShowResult(Context context) {
-            super(context,android.R.style.Theme_Translucent_NoTitleBar);
+            super(context, android.R.style.Theme_Translucent_NoTitleBar);
             setTitle("Result");
             setContentView(R.layout.dialog_result);
             resultGrid = (GridView) this.findViewById(R.id.gv_matrix_result_dialog);
@@ -128,7 +129,7 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         @Override
         public void show() {
             super.show();
-            resultGrid.setAdapter( new ResultMatrixAdapter(MatrixActivity.this, size, matrixA));
+            resultGrid.setAdapter(new ResultMatrixAdapter(MatrixActivity.this, size, matrixA));
         }
     }
 }
