@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import com.example.cs_c_matrix_calc.matrix.utils.MatrixOperation;
 
-public class MyActivity extends Activity implements View.OnClickListener{
+public class MyActivity extends Activity implements View.OnClickListener {
     /**
      * Called when the activity is first created.
      */
@@ -22,28 +23,27 @@ public class MyActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.bntAdd_main:
-                startActivity( new Intent(getApplicationContext(),
-                        MatrixActivity.class).putExtra("operation",AppConst.SUM));
+                startActivity(new Intent(getApplicationContext(),
+                        MatrixActivity.class).putExtra("operation", MatrixOperation.SUM));
                 break;
             case R.id.bntMinus_main:
-                startActivity( new Intent(getApplicationContext(),
-                        MatrixActivity.class).putExtra("operation",AppConst.MINUS));
+                startActivity(new Intent(getApplicationContext(),
+                        MatrixActivity.class).putExtra("operation", MatrixOperation.MINUS));
                 break;
             case R.id.bntDivided_main:
-                startActivity( new Intent(getApplicationContext(),
-                        MatrixActivity.class).putExtra("operation",AppConst.DIVIDED));
+                startActivity(new Intent(getApplicationContext(),
+                        MatrixActivity.class).putExtra("operation", MatrixOperation.DIVIDED));
                 break;
             case R.id.bntMultiplied_main:
-                startActivity( new Intent(getApplicationContext(),
-                        MatrixActivity.class).putExtra("operation",AppConst.MULTIPLIED));
+                startActivity(new Intent(getApplicationContext(),
+                        MatrixActivity.class).putExtra("operation", MatrixOperation.MULTIPLIED));
                 break;
             case R.id.bntInverse_main:
-                startActivity( new Intent(getApplicationContext(),
-                        MatrixActivity.class).putExtra("operation",AppConst.INVERSE));
+                startActivity(new Intent(getApplicationContext(),
+                        MatrixActivity.class).putExtra("operation", MatrixOperation.INVERSE));
                 break;
         }
-
     }
 }
