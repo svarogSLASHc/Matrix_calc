@@ -8,6 +8,6 @@
         android:layout_height="match_parent"
         android:id="@+id/etItem_item_grid"
         android:singleLine="true"
-        android:inputType="number"/>
+        android:inputType="numberDecimal"/>
 
 </LinearLayout>

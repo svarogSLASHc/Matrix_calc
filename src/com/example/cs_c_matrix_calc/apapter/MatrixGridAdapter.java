@@ -71,8 +71,11 @@ public class MatrixGridAdapter extends BaseAdapter {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 int pos = Integer.parseInt(finalHolder.etComment.getTag().toString());
-                mNumberArray[pos / mMatrixSize][pos % mMatrixSize] =
-                        Integer.parseInt(finalHolder.etComment.getText().toString());
+                try {
+                    mNumberArray[pos / mMatrixSize][pos % mMatrixSize] =
+                            finalHolder.etComment.getText().toString().trim().equals("-")
+                                    ? -1 : Integer.parseInt(finalHolder.etComment.getText().toString());
+                }catch (Exception e){}
             }
         });
         return convertView;
