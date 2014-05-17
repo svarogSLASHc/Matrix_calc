@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.cs_c_matrix_calc.apapter.MatrixGridAdapter;
 import com.example.cs_c_matrix_calc.apapter.ResultMatrixAdapter;
 import com.example.cs_c_matrix_calc.matrix.Matrix;
+import com.example.cs_c_matrix_calc.matrix.utils.MatrixOperation;
 
 /**
  * Created by cs_c on 5/15/14.
@@ -24,14 +25,14 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     private MatrixGridAdapter mFirstAdapter;
     private MatrixGridAdapter mSecondAdapter;
     private int size = 2;
-    private int mOperation = 2;
+    private MatrixOperation mOperation = MatrixOperation.NONE;
     double[][] result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calc_activity);
-        mOperation = getIntent().getExtras().getInt("operation", -1);
+        mOperation = (MatrixOperation) getIntent().getExtras().get("operation");
         initView();
         setData();
     }
@@ -101,19 +102,19 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         Matrix B = new Matrix(matrixB);
 
         switch (mOperation) {
-            case AppConst.SUM:
+            case SUM:
                 result = A.plus(B).matrix();
                 break;
-            case AppConst.MINUS:
+            case MINUS:
                 result = A.minus(B).matrix();
                 break;
-            case AppConst.MULTIPLIED:
+            case MULTIPLIED:
                 result = A.mult(B).matrix();
                 break;
-            case AppConst.DIVIDED:
+            case DIVIDED:
                 result = A.mult(B.inverse()).matrix();
                 break;
-            case AppConst.INVERSE:
+            case INVERSE:
                 result = A.inverse().matrix();
                 break;
             default:

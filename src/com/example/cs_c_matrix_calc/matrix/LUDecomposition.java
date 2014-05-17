@@ -7,7 +7,7 @@ import java.io.Serializable;
  * <p/>
  * For an rows-by-columns matrix A with rows >= columns, the LU decomposition is an rows-by-columns
  * unit lower triangular matrix L, an columns-by-columns upper triangular matrix U,
- * and a permutation vector piv of length rows so that A(piv,:) = L*U.
+ * and a permutation vector pivot of length rows so that A(pivot,:) = L*U.
  * If rows < columns, then L is rows-by-rows and U is rows-by-columns.
  * <p/>
  * The LU decompostion with pivoting always exists, even if the matrix is
@@ -19,12 +19,12 @@ import java.io.Serializable;
 public class LUDecomposition implements Serializable {
 
     private double[][] LU;
-    private int rows, columns, pivsign; // pivot sign
-    private int[] piv; // Internal storage of pivot vector.
+    private int rows, columns, pivotSign; // pivot sign
+    private int[] pivot; // Internal storage of pivot vector.
 
     /**
      * LU Decomposition
-     * Structure to access L, U and piv.
+     * Structure to access L, U and pivot.
      *
      * @param A Rectangular matrix
      */
@@ -35,11 +35,11 @@ public class LUDecomposition implements Serializable {
         LU = A.matrixCopy();
         rows = A.rows();
         columns = A.columns();
-        piv = new int[rows];
+        pivot = new int[rows];
         for (int i = 0; i < rows; i++) {
-            piv[i] = i;
+            pivot[i] = i;
         }
-        pivsign = 1;
+        pivotSign = 1;
         double[] LUrowi;
         double[] LUcolj = new double[rows];
 
@@ -83,10 +83,10 @@ public class LUDecomposition implements Serializable {
                     LU[p][k] = LU[j][k];
                     LU[j][k] = t;
                 }
-                int k = piv[p];
-                piv[p] = piv[j];
-                piv[j] = k;
-                pivsign = -pivsign;
+                int k = pivot[p];
+                pivot[p] = pivot[j];
+                pivot[j] = k;
+                pivotSign = -pivotSign;
             }
 
             // Compute multipliers.
@@ -157,12 +157,12 @@ public class LUDecomposition implements Serializable {
     /**
      * Return pivot permutation vector
      *
-     * @return piv
+     * @return pivot
      */
     public int[] getPivot() {
         int[] p = new int[rows];
         for (int i = 0; i < rows; i++) {
-            p[i] = piv[i];
+            p[i] = pivot[i];
         }
         return p;
     }
@@ -170,12 +170,12 @@ public class LUDecomposition implements Serializable {
     /**
      * Return pivot permutation vector as a one-dimensional double array
      *
-     * @return (double) piv
+     * @return (double) pivot
      */
     public double[] getDoublePivot() {
         double[] vals = new double[rows];
         for (int i = 0; i < rows; i++) {
-            vals[i] = (double) piv[i];
+            vals[i] = (double) pivot[i];
         }
         return vals;
     }
@@ -190,7 +190,7 @@ public class LUDecomposition implements Serializable {
         if (rows != columns) {
             throw new IllegalArgumentException("Matrix must be square.");
         }
-        double d = (double) pivsign;
+        double d = (double) pivotSign;
         for (int j = 0; j < columns; j++) {
             d *= LU[j][j];
         }
@@ -201,7 +201,7 @@ public class LUDecomposition implements Serializable {
      * Solve A*X = B
      *
      * @param B A Matrix with as many rows as A and any number of columns.
-     * @return X so that L*U*X = B(piv,:)
+     * @return X so that L*U*X = B(pivot,:)
      * @throws IllegalArgumentException Matrix row dimensions must agree.
      * @throws RuntimeException         Matrix is singular.
      */
@@ -215,10 +215,10 @@ public class LUDecomposition implements Serializable {
 
         // Copy right hand side with pivoting
         int nx = B.columns();
-        Matrix Xmat = B.subMatrix(piv, 0, nx - 1);
+        Matrix Xmat = B.subMatrix(pivot, 0, nx - 1);
         double[][] X = Xmat.matrix();
 
-        // Solve L*Y = B(piv,:)
+        // Solve L*Y = B(pivot,:)
         for (int k = 0; k < columns; k++) {
             for (int i = k + 1; i < columns; i++) {
                 for (int j = 0; j < nx; j++) {
