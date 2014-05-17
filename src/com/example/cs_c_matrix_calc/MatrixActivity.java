@@ -25,6 +25,7 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     private MatrixGridAdapter mSecondAdapter;
     private int size = 2;
     private int mOperation = 2;
+    double[][] result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +45,14 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     }
 
     private void setData() {
-        ArrayAdapter<String> adapterSp = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.sp_size));
+        ArrayAdapter<String> adapterSp = new ArrayAdapter<String>(MatrixActivity.this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.sp_size));
         mMatrixSize.setAdapter(adapterSp);
         mMatrixSize.setPrompt("Matrix size");
         mMatrixSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(),
+                Toast.makeText(MatrixActivity.this,
                         "Selected  " + adapterView.getItemAtPosition(i),
                         Toast.LENGTH_SHORT).show();
                 size = Integer.parseInt(adapterView.getItemAtPosition(i).toString());
@@ -61,7 +61,8 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                // use default size
+//                setMatrixSize();
             }
         });
     }
@@ -69,11 +70,11 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     private void setMatrixSize() {
         mGvMatrixFirst.setNumColumns(size);
         mGvMatrixFirst.setColumnWidth(50);
-        mFirstAdapter = new MatrixGridAdapter(this, size);
+        mFirstAdapter = new MatrixGridAdapter(MatrixActivity.this, size);
         mGvMatrixFirst.setAdapter(mFirstAdapter);
         mGvMatrixSecond.setNumColumns(size);
         mGvMatrixSecond.setColumnWidth(50);
-        mSecondAdapter = new MatrixGridAdapter(this, size);
+        mSecondAdapter = new MatrixGridAdapter(MatrixActivity.this, size);
         mGvMatrixSecond.setAdapter(mSecondAdapter);
     }
 
@@ -88,6 +89,9 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
                 doCalc();
                 break;
         }
+        ShowResult showResult = new ShowResult(MatrixActivity.this);
+        showResult.show();
+
     }
 
     private void doCalc() {
@@ -95,10 +99,11 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         double[][] matrixB = mSecondAdapter.mNumberArray;
         Matrix A = new Matrix(matrixA);
         Matrix B = new Matrix(matrixB);
-        double[][] result;
+
         switch (mOperation) {
             case AppConst.SUM:
                 result = A.plus(B).matrix();
+                break;
             case AppConst.MINUS:
                 result = A.minus(B).matrix();
                 break;
@@ -111,6 +116,8 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
             case AppConst.INVERSE:
                 result = A.inverse().matrix();
                 break;
+            default:
+                Toast.makeText(MatrixActivity.this, "Wrong operation passed!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -121,15 +128,14 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
             super(context, android.R.style.Theme_Translucent_NoTitleBar);
             setTitle("Result");
             setContentView(R.layout.dialog_result);
-            resultGrid = (GridView) this.findViewById(R.id.gv_matrix_result_dialog);
+            resultGrid = (GridView) findViewById(R.id.gv_matrix_result_dialog);
             resultGrid.setNumColumns(size);
-
         }
 
         @Override
         public void show() {
             super.show();
-            resultGrid.setAdapter(new ResultMatrixAdapter(MatrixActivity.this, size, matrixA));
+            resultGrid.setAdapter(new ResultMatrixAdapter(MatrixActivity.this, size, result));
         }
     }
 }

@@ -1,32 +1,28 @@
 package com.example.cs_c_matrix_calc.apapter;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
-
 import com.example.cs_c_matrix_calc.R;
 
 /**
  * Created by cs_c on 5/15/14.
  */
-public class ResultMatrixAdapter extends BaseAdapter{
+public class ResultMatrixAdapter extends BaseAdapter {
     private int mMatrixSize;
     private Context mContext;
-    public int[][] mNumberArray;
+    public double[][] mNumberArray;
 
 
-    public ResultMatrixAdapter(Context _context, int _size, int[][] _numArray) {
+    public ResultMatrixAdapter(Context _context, int _size, double[][] _numArray) {
         mContext = _context;
         mMatrixSize = _size;
         mNumberArray = _numArray;
 
     }
-
 
     @Override
     public int getCount() {
@@ -58,7 +54,7 @@ public class ResultMatrixAdapter extends BaseAdapter{
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.etComment.setText(mNumberArray[position/mMatrixSize][position%mMatrixSize] + "");
+        holder.etComment.setText(mNumberArray[position / mMatrixSize][position % mMatrixSize] + "");
         return convertView;
     }
 
