@@ -25,7 +25,7 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     private MatrixGridAdapter mFirstAdapter;
     private MatrixGridAdapter mSecondAdapter;
     private int size = 2;
-    private MatrixOperation mOperation = MatrixOperation.DIVIDED.SUM;
+    private MatrixOperation mOperation = MatrixOperation.NONE;
     double[][] result;
 
     @Override

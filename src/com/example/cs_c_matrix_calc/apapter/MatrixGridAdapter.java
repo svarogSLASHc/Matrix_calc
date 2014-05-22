@@ -19,13 +19,12 @@ public class MatrixGridAdapter extends BaseAdapter {
     public double[][] mNumberArray;
 
 
-    public MatrixGridAdapter(Context _context, int _size) {
-        mContext = _context;
-        mMatrixSize = _size;
-        mNumberArray = new double[_size][_size];
+    public MatrixGridAdapter(Context context, int size) {
+        mContext = context;
+        mMatrixSize = size;
+        mNumberArray = new double[size][size];
 
     }
-
 
     @Override
     public int getCount() {

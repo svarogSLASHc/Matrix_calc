@@ -44,6 +44,9 @@ public class MyActivity extends Activity implements View.OnClickListener {
                 startActivity(new Intent(getApplicationContext(),
                         MatrixActivity.class).putExtra("operation", MatrixOperation.INVERSE));
                 break;
+            default:
+                startActivity(new Intent(getApplicationContext(),
+                        MatrixActivity.class).putExtra("operation", MatrixOperation.NONE));
         }
     }
 }
