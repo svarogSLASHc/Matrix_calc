@@ -4,26 +4,30 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-import com.example.cs_c_matrix_calc.apapter.MatrixGridAdapter;
-import com.example.cs_c_matrix_calc.apapter.ResultMatrixAdapter;
+
 import com.example.cs_c_matrix_calc.matrix.Matrix;
 import com.example.cs_c_matrix_calc.matrix.utils.MatrixOperation;
+
+import java.util.ArrayList;
 
 /**
  * Created by cs_c on 5/15/14.
  */
 public class MatrixActivity extends Activity implements View.OnClickListener {
     private Spinner mMatrixSize;
-    private GridView mGvMatrixFirst;
-    private GridView mGvMatrixSecond;
-    private MatrixGridAdapter mFirstAdapter;
-    private MatrixGridAdapter mSecondAdapter;
+    private double[][] mFirstNumberArray;
+    private double[][] mSecondNumberArray;
     private int size = 2;
     private MatrixOperation mOperation = MatrixOperation.NONE;
     double[][] result;
@@ -33,6 +37,9 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calc_activity);
         mOperation = (MatrixOperation) getIntent().getExtras().get("operation");
+        if (mOperation.equals(MatrixOperation.INVERSE)){
+            findViewById(R.id.rg_matrix_switcher).setVisibility(View.INVISIBLE);
+        }
         initView();
         setData();
     }
@@ -40,9 +47,9 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
     private void initView() {
         findViewById(R.id.btn_clear_matrix_activity).setOnClickListener(this);
         findViewById(R.id.btn_calc_matrix_activity).setOnClickListener(this);
+        findViewById(R.id.rb_check_first_matrix).setOnClickListener(this);
+        findViewById(R.id.rb_check_second_matrix).setOnClickListener(this);
         mMatrixSize = (Spinner) findViewById(R.id.sp_matrix_size_matrix_activity);
-        mGvMatrixFirst = (GridView) findViewById(R.id.gv_matrix_first_matrix_activity);
-        mGvMatrixSecond = (GridView) findViewById(R.id.gv_matrix_second_matrix_activity);
     }
 
     private void setData() {
@@ -53,30 +60,73 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
         mMatrixSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MatrixActivity.this,
-                        "Selected  " + adapterView.getItemAtPosition(i),
-                        Toast.LENGTH_SHORT).show();
                 size = Integer.parseInt(adapterView.getItemAtPosition(i).toString());
                 setMatrixSize();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                // use default size
-//                setMatrixSize();
             }
         });
     }
 
     private void setMatrixSize() {
-        mGvMatrixFirst.setNumColumns(size);
-        mGvMatrixFirst.setColumnWidth(50);
-        mFirstAdapter = new MatrixGridAdapter(MatrixActivity.this, size);
-        mGvMatrixFirst.setAdapter(mFirstAdapter);
-        mGvMatrixSecond.setNumColumns(size);
-        mGvMatrixSecond.setColumnWidth(50);
-        mSecondAdapter = new MatrixGridAdapter(MatrixActivity.this, size);
-        mGvMatrixSecond.setAdapter(mSecondAdapter);
+
+        mFirstNumberArray  = new double[size][size];
+        mSecondNumberArray = new double[size][size];
+        LinearLayout llMatrixTableFirst = (LinearLayout) findViewById(R.id.ll_first_matrix_table_matrix_activity);
+        createMatrixTable(llMatrixTableFirst, mFirstNumberArray);
+        LinearLayout llMatrixTableSecond = (LinearLayout) findViewById(R.id.ll_second_matrix_table_matrix_activity);
+        createMatrixTable(llMatrixTableSecond, mSecondNumberArray);
+    }
+
+    private void createMatrixTable(LinearLayout llContainer, final double[][] numberArray){
+        float dens = getResources().getDisplayMetrics().density;
+        llContainer.removeAllViews();
+        for (int row = 0; row < size; row++){
+            LinearLayout llRow = new LinearLayout(this);
+            llRow.setOrientation(LinearLayout.HORIZONTAL);
+            llRow.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            for (int column = 0; column < size; column++){
+                final EditText etItem = new EditText(this);
+                etItem.setHint((column + 1) + "x" +(row + 1));
+                etItem.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                final int finalRow = row;
+                final int finalColumn = column;
+                etItem.setTag(new ArrayList<Integer>(){{
+                    add(finalRow);
+                    add(finalColumn);
+                }});
+                etItem.addTextChangedListener(new TextWatcher() {
+
+                    public void afterTextChanged(Editable s) {
+                    }
+
+                    public void beforeTextChanged(CharSequence s, int start,
+                                                  int count, int after) {
+                    }
+
+                    public void onTextChanged(CharSequence s, int start,
+                                              int before, int count) {
+
+                        try {
+                            if (etItem.getText().toString().trim().equals("")) {
+                                numberArray[finalRow][finalColumn] = 0;
+                                return;
+                            }
+                            numberArray[finalRow][finalColumn] = etItem.getText().toString().trim().equals("-")
+                                    ? -1 : Integer.parseInt(etItem.getText().toString());
+                        }
+                        catch (Exception e){
+                            Toast.makeText(MatrixActivity.this, "Wrong number", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                etItem.setLayoutParams(new LinearLayout.LayoutParams((int) (70 * dens), (int) (40 * dens)));
+                llRow.addView(etItem);
+            }
+            llContainer.addView(llRow);
+        }
     }
 
     @Override
@@ -89,17 +139,22 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
                 Toast.makeText(this, "Calc", Toast.LENGTH_SHORT).show();
                 doCalc();
                 break;
+            case R.id.rb_check_first_matrix:
+                findViewById(R.id.ll_first_matrix_table_matrix_activity).setVisibility(View.VISIBLE);
+                findViewById(R.id.ll_second_matrix_table_matrix_activity).setVisibility(View.GONE);
+                break;
+            case R.id.rb_check_second_matrix:
+                findViewById(R.id.ll_first_matrix_table_matrix_activity).setVisibility(View.GONE);
+                findViewById(R.id.ll_second_matrix_table_matrix_activity).setVisibility(View.VISIBLE);
+                break;
         }
-        ShowResult showResult = new ShowResult(MatrixActivity.this);
-        showResult.show();
+
 
     }
 
     private void doCalc() {
-        double[][] matrixA = mFirstAdapter.mNumberArray;
-        double[][] matrixB = mSecondAdapter.mNumberArray;
-        Matrix A = new Matrix(matrixA);
-        Matrix B = new Matrix(matrixB);
+        Matrix A = new Matrix(mFirstNumberArray);
+        Matrix B = new Matrix(mSecondNumberArray);
 
         switch (mOperation) {
             case SUM:
@@ -120,23 +175,43 @@ public class MatrixActivity extends Activity implements View.OnClickListener {
             default:
                 Toast.makeText(MatrixActivity.this, "Wrong operation passed!", Toast.LENGTH_SHORT).show();
         }
+        ShowResult showResult = new ShowResult(MatrixActivity.this);
+        showResult.show();
     }
 
     private class ShowResult extends Dialog {
-        GridView resultGrid;
 
         public ShowResult(Context context) {
             super(context, android.R.style.Theme_Translucent_NoTitleBar);
             setTitle("Result");
             setContentView(R.layout.dialog_result);
-            resultGrid = (GridView) findViewById(R.id.gv_matrix_result_dialog);
-            resultGrid.setNumColumns(size);
+            LinearLayout llResult = (LinearLayout) findViewById(R.id.ll_matrix_result_dialog);
+            createMatrixTable(llResult, result);
         }
 
         @Override
         public void show() {
             super.show();
-            resultGrid.setAdapter(new ResultMatrixAdapter(MatrixActivity.this, size, result));
+
+        }
+
+        private void createMatrixTable(LinearLayout llContainer, final double[][] numberArray){
+            float dens = getResources().getDisplayMetrics().density;
+            llContainer.removeAllViews();
+            for (int row = 0; row < size; row++){
+                LinearLayout llRow = new LinearLayout(getApplicationContext());
+                llRow.setOrientation(LinearLayout.HORIZONTAL);
+                llRow.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                for (int column = 0; column < size; column++){
+                    final TextView etItem = new TextView(getApplicationContext());
+                    etItem.setText(String.valueOf(numberArray[row][column]));
+                 //   etItem.setGravity(Gravity.CENTER);
+                    etItem.setLayoutParams(new LinearLayout.LayoutParams((int) (60 * dens), (int) (20 * dens)));
+                    llRow.addView(etItem);
+                }
+                llContainer.addView(llRow);
+            }
         }
     }
 }

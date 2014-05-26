@@ -14,6 +14,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".MatrixActivity"/>
+        <activity android:name=".MatrixActivity"
+            android:configChanges="orientation|keyboardHidden"/>
     </application>
 </manifest> 

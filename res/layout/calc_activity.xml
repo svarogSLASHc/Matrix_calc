@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="5dp">
 
     <Spinner
         android:id="@+id/sp_matrix_size_matrix_activity"
@@ -22,16 +23,57 @@
         android:layout_toRightOf="@id/btn_calc_matrix_activity"
         android:text="Clear" />
 
-    <GridView
-        android:id="@+id/gv_matrix_first_matrix_activity"
+    <RadioGroup
+        android:id="@+id/rg_matrix_switcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sp_matrix_size_matrix_activity" />
+        android:layout_below="@+id/btn_clear_matrix_activity"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
 
-    <GridView
-        android:id="@+id/gv_matrix_second_matrix_activity"
+        <RadioButton
+            android:id="@+id/rb_check_first_matrix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First Matrix"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/rb_check_second_matrix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Second Matrix" />
+    </RadioGroup>
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gv_matrix_first_matrix_activity" />
+        android:layout_below="@+id/rg_matrix_switcher"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_first_matrix_table_matrix_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/ll_second_matrix_table_matrix_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
 
 </RelativeLayout>
