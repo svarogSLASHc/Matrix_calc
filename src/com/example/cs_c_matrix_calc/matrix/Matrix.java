@@ -8,12 +8,11 @@ public class Matrix implements Cloneable, Serializable {
     private int rows, columns;
 
     /**
-     * Construct an rows-by-columns matrix of zeros.
+     * Construct an rows-by-columns matrix.
      *
      * @param rows    Number of rows.
      * @param columns Number of colums.
      */
-
     public Matrix(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
@@ -21,13 +20,12 @@ public class Matrix implements Cloneable, Serializable {
     }
 
     /**
-     * Construct a matrix quickly without checking arguments.
+     * Construct a matrix quickly without checking arguments
      *
      * @param matrix  Two-dimensional array of doubles.
      * @param rows    Number of rows.
      * @param columns Number of colums.
      */
-
     public Matrix(double[][] matrix, int rows, int columns) {
         this.matrix = matrix;
         this.rows = rows;
@@ -37,41 +35,18 @@ public class Matrix implements Cloneable, Serializable {
     /**
      * Construct a matrix from a 2-D array.
      *
-     * @param other Two-dimensional array of doubles.
+     * @param array2D Two-dimensional array of doubles.
      * @throws IllegalArgumentException All rows must have the same length
      */
-
-    public Matrix(double[][] other) {
-        rows = other.length;
-        columns = other[0].length;
+    public Matrix(double[][] array2D) {
+        rows = array2D.length;
+        columns = array2D[0].length;
         for (int i = 0; i < rows; i++) {
-            if (other[i].length != columns) {
+            if (array2D[i].length != columns) {
                 throw new IllegalArgumentException("All rows must have the same length.");
             }
         }
-        this.matrix = other;
-    }
-
-
-    /**
-     * Make a deep copy of a matrix
-     */
-    public Matrix copy() {
-        Matrix X = new Matrix(rows, columns);
-        double[][] C = X.matrix();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                C[i][j] = matrix[i][j];
-            }
-        }
-        return X;
-    }
-
-    /**
-     * Clone the Matrix object.
-     */
-    public Object clone() {
-        return this.copy();
+        this.matrix = array2D;
     }
 
     /**
@@ -84,18 +59,24 @@ public class Matrix implements Cloneable, Serializable {
     }
 
     /**
-     * Copy the internal two-dimensional array.
-     *
-     * @return Two-dimensional array copy of matrix elements.
+     * Make a deep copy of a matrix
      */
-    public double[][] matrixCopy() {
-        double[][] C = new double[rows][columns];
+    public Matrix copy() {
+        Matrix copy = new Matrix(rows, columns);
+        double[][] matrixX = copy.matrix();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                C[i][j] = matrix[i][j];
+                matrixX[i][j] = matrix[i][j];
             }
         }
-        return C;
+        return copy;
+    }
+
+    /**
+     * Clone the Matrix object.
+     */
+    public Object clone() {
+        return this.copy();
     }
 
     /**
@@ -124,7 +105,6 @@ public class Matrix implements Cloneable, Serializable {
      * @return matrix(i, j)
      * @throws ArrayIndexOutOfBoundsException
      */
-
     public double get(int i, int j) {
         return matrix[i][j];
     }
@@ -229,7 +209,7 @@ public class Matrix implements Cloneable, Serializable {
      * @return matrix + other
      */
     public Matrix plus(Matrix other) {
-        if (!areMatrixesEqual(other))
+        if (!isMatrixEqualTo(other))
             throw new IllegalArgumentException("Matrix dimensions must agree.");
 
         Matrix X = new Matrix(rows, columns);
@@ -250,7 +230,7 @@ public class Matrix implements Cloneable, Serializable {
      */
     public Matrix minus(Matrix other) {
 
-        if (!areMatrixesEqual(other))
+        if (!isMatrixEqualTo(other))
             throw new IllegalArgumentException("Matrix dimensions must agree.");
         Matrix X = new Matrix(rows, columns);
         double[][] C = X.matrix();
@@ -293,34 +273,11 @@ public class Matrix implements Cloneable, Serializable {
     }
 
     /**
-     * LU Decomposition
-     *
-     * @return LUDecomposition
-     * @see LUDecomposition
-     */
-
-    public LUDecomposition lu() {
-        return new LUDecomposition(this);
-    }
-
-    /**
-     * QR Decomposition
-     *
-     * @return QRDecomposition
-     * @see QRDecomposition
-     */
-
-    public QRDecomposition qr() {
-        return new QRDecomposition(this);
-    }
-
-    /**
      * Solve matrix*X = other
      *
      * @param other right hand side
      * @return solution if matrix is square, least squares solution otherwise
      */
-
     public Matrix solve(Matrix other) {
         return (rows == columns ? (new LUDecomposition(this)).solve(other) :
                 (new QRDecomposition(this)).solve(other));
@@ -331,7 +288,6 @@ public class Matrix implements Cloneable, Serializable {
      *
      * @return inverse(matrix) if matrix is square, pseudoinverse otherwise.
      */
-
     public Matrix inverse() {
         return solve(identity(rows, rows));
     }
@@ -341,7 +297,6 @@ public class Matrix implements Cloneable, Serializable {
      *
      * @return determinant
      */
-
     public double det() {
         return new LUDecomposition(this).det();
     }
@@ -351,7 +306,6 @@ public class Matrix implements Cloneable, Serializable {
      *
      * @return sum of the diagonal elements.
      */
-
     public double trace() {
         double t = 0;
         for (int i = 0; i < Math.min(rows, columns); i++) {
@@ -367,7 +321,6 @@ public class Matrix implements Cloneable, Serializable {
      * @param columns Number of colums.
      * @return An rows-by-columns matrix with uniformly distributed random elements.
      */
-
     public static Matrix random(int rows, int columns) {
         Matrix A = new Matrix(rows, columns);
         double[][] X = A.matrix();
@@ -386,7 +339,6 @@ public class Matrix implements Cloneable, Serializable {
      * @param columns Number of colums.
      * @return An rows-by-columns matrix with ones on the diagonal and zeros elsewhere.
      */
-
     public static Matrix identity(int rows, int columns) {
         Matrix A = new Matrix(rows, columns);
         double[][] X = A.matrix();
@@ -401,8 +353,7 @@ public class Matrix implements Cloneable, Serializable {
     /**
      * Check if size(matrix) == size(other) *
      */
-
-    private boolean areMatrixesEqual(Matrix other) {
+    private boolean isMatrixEqualTo(Matrix other) {
         if (other.rows != rows || other.columns != columns) {
             return false;
 

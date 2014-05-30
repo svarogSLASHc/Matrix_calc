@@ -2,23 +2,10 @@ package com.example.cs_c_matrix_calc.matrix;
 
 import java.io.Serializable;
 
-/**
- * LU Decomposition.
- * <p/>
- * For an rows-by-columns matrix A with rows >= columns, the LU decomposition is an rows-by-columns
- * unit lower triangular matrix L, an columns-by-columns upper triangular matrix U,
- * and a permutation vector pivot of length rows so that A(pivot,:) = L*U.
- * If rows < columns, then L is rows-by-rows and U is rows-by-columns.
- * <p/>
- * The LU decompostion with pivoting always exists, even if the matrix is
- * singular, so the constructor will never fail.  The primary use of the
- * LU decomposition is in the solution of square systems of simultaneous
- * linear equations.  This will fail if isNonsingular() returns false.
- */
-
 public class LUDecomposition implements Serializable {
 
-    private double[][] LU;
+    private static final double EPS = 1e-6;
+    private Matrix LU;
     private int rows, columns, pivotSign; // pivot sign
     private int[] pivot; // Internal storage of pivot vector.
 
@@ -30,9 +17,7 @@ public class LUDecomposition implements Serializable {
      */
     public LUDecomposition(Matrix A) {
 
-        // Use a "left-looking", dot-product, Crout/Doolittle algorithm.
-
-        LU = A.matrixCopy();
+        LU = A.copy();
         rows = A.rows();
         columns = A.columns();
         pivot = new int[rows];
@@ -40,48 +25,38 @@ public class LUDecomposition implements Serializable {
             pivot[i] = i;
         }
         pivotSign = 1;
-        double[] LUrowi;
-        double[] LUcolj = new double[rows];
-
-        // Outer loop.
+        double[] rowI;
+        double[] columnJ = new double[rows];
 
         for (int j = 0; j < columns; j++) {
 
-            // Make a copy of the j-th column to localize references.
-
             for (int i = 0; i < rows; i++) {
-                LUcolj[i] = LU[i][j];
+                columnJ[i] = LU.get(i, j);
             }
 
-            // Apply previous transformations.
-
             for (int i = 0; i < rows; i++) {
-                LUrowi = LU[i];
-
-                // Most of the time is spent in the following dot product.
+                rowI = LU.matrix()[i];
 
                 int kmax = Math.min(i, j);
                 double s = 0.0;
                 for (int k = 0; k < kmax; k++) {
-                    s += LUrowi[k] * LUcolj[k];
+                    s += rowI[k] * columnJ[k];
                 }
 
-                LUrowi[j] = LUcolj[i] -= s;
+                rowI[j] = columnJ[i] -= s;
             }
-
-            // Find pivot and exchange if necessary.
 
             int p = j;
             for (int i = j + 1; i < rows; i++) {
-                if (Math.abs(LUcolj[i]) > Math.abs(LUcolj[p])) {
+                if (Math.abs(columnJ[i]) > Math.abs(columnJ[p])) {
                     p = i;
                 }
             }
             if (p != j) {
                 for (int k = 0; k < columns; k++) {
-                    double t = LU[p][k];
-                    LU[p][k] = LU[j][k];
-                    LU[j][k] = t;
+                    double t = LU.get(p, k);
+                    LU.set(p, k, LU.get(j, k));
+                    LU.set(j, k, t);
                 }
                 int k = pivot[p];
                 pivot[p] = pivot[j];
@@ -89,49 +64,42 @@ public class LUDecomposition implements Serializable {
                 pivotSign = -pivotSign;
             }
 
-            // Compute multipliers.
-
-            if (j < rows & LU[j][j] != 0.0) {
+            if (j < rows & LU.get(j, j) != 0.0) {
                 for (int i = j + 1; i < rows; i++) {
-                    LU[i][j] /= LU[j][j];
+                    LU.set(i, j, LU.get(i, j) / LU.get(j, j));
                 }
             }
         }
     }
 
-    /**
-     * Is the matrix nonsingular?
-     *
-     * @return true if U, and hence A, is nonsingular.
-     */
     public boolean isNonSingular() {
         for (int j = 0; j < columns; j++) {
-            if (LU[j][j] == 0)
+            if (Math.abs(LU.get(j, j)) < EPS)
                 return false;
         }
         return true;
     }
 
     /**
-     * Return lower triangular factor
+     * Return lower triangular matrix
      *
      * @return L
      */
     public Matrix getL() {
-        Matrix X = new Matrix(rows, columns);
-        double[][] L = X.matrix();
+        Matrix L = new Matrix(rows, columns);
+        double[][] matrixL = L.matrix();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (i > j) {
-                    L[i][j] = LU[i][j];
+                    matrixL[i][j] = LU.get(i, j);
                 } else if (i == j) {
-                    L[i][j] = 1.0;
+                    matrixL[i][j] = 1.0;
                 } else {
-                    L[i][j] = 0.0;
+                    matrixL[i][j] = 0.0;
                 }
             }
         }
-        return X;
+        return L;
     }
 
     /**
@@ -140,44 +108,18 @@ public class LUDecomposition implements Serializable {
      * @return U
      */
     public Matrix getU() {
-        Matrix X = new Matrix(columns, columns);
-        double[][] U = X.matrix();
+        Matrix U = new Matrix(columns, columns);
+        double[][] matrixU = U.matrix();
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < columns; j++) {
                 if (i <= j) {
-                    U[i][j] = LU[i][j];
+                    matrixU[i][j] = LU.get(i, j);
                 } else {
-                    U[i][j] = 0.0;
+                    matrixU[i][j] = 0.0;
                 }
             }
         }
-        return X;
-    }
-
-    /**
-     * Return pivot permutation vector
-     *
-     * @return pivot
-     */
-    public int[] getPivot() {
-        int[] p = new int[rows];
-        for (int i = 0; i < rows; i++) {
-            p[i] = pivot[i];
-        }
-        return p;
-    }
-
-    /**
-     * Return pivot permutation vector as a one-dimensional double array
-     *
-     * @return (double) pivot
-     */
-    public double[] getDoublePivot() {
-        double[] vals = new double[rows];
-        for (int i = 0; i < rows; i++) {
-            vals[i] = (double) pivot[i];
-        }
-        return vals;
+        return U;
     }
 
     /**
@@ -192,7 +134,7 @@ public class LUDecomposition implements Serializable {
         }
         double d = (double) pivotSign;
         for (int j = 0; j < columns; j++) {
-            d *= LU[j][j];
+            d *= LU.get(j, j);
         }
         return d;
     }
@@ -222,18 +164,18 @@ public class LUDecomposition implements Serializable {
         for (int k = 0; k < columns; k++) {
             for (int i = k + 1; i < columns; i++) {
                 for (int j = 0; j < nx; j++) {
-                    X[i][j] -= X[k][j] * LU[i][k];
+                    X[i][j] -= X[k][j] * LU.get(i, k);
                 }
             }
         }
         // Solve U*X = Y;
         for (int k = columns - 1; k >= 0; k--) {
             for (int j = 0; j < nx; j++) {
-                X[k][j] /= LU[k][k];
+                X[k][j] /= LU.get(k, k);
             }
             for (int i = 0; i < k; i++) {
                 for (int j = 0; j < nx; j++) {
-                    X[i][j] -= X[k][j] * LU[i][k];
+                    X[i][j] -= X[k][j] * LU.get(i, k);
                 }
             }
         }
