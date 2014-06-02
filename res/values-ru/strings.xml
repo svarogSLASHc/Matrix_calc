@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Матричный калькулятор</string>
+    <string name="op_sum">Сума</string>
+    <string name="op_minus">Разность</string>
+    <string name="op_multiplied">Умножение</string>
+    <string name="op_divided">Деление</string>
+    <string name="op_inverse">Обратная</string>
+    <string name="op_calc">Вычислить</string>
+    <string name="op_clear">Очистить</string>
+    <string name="matrix_first">Первая матрица</string>
+    <string name="matrix_second">Вторая матрица</string>
+</resources>

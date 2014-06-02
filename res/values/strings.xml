@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">cs.c.matrix.calc</string>
+    <string name="app_name">Matrix calc</string>
     <string name="mail_plus"></string>
     <string-array name="sp_size">
         <item>2</item>
@@ -13,4 +13,13 @@
         <item>9</item>
         <item>10</item>
     </string-array>
+    <string name="op_sum">Sum</string>
+    <string name="op_minus">Minus</string>
+    <string name="op_multiplied">Multiplied</string>
+    <string name="op_divided">Divided</string>
+    <string name="op_inverse">Inverse</string>
+    <string name="op_calc">Calc</string>
+    <string name="op_clear">Clear</string>
+    <string name="matrix_first">First Matrix</string>
+    <string name="matrix_second">Second Matrix</string>
 </resources>

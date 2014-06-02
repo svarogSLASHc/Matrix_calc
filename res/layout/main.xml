@@ -11,7 +11,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:text="Sum"
+            android:text="@string/op_sum"
             />
     <Button
             android:id="@+id/bntMinus_main"
@@ -19,7 +19,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:text="Minus"
+            android:text="@string/op_minus"
             />
     <Button
             android:id="@+id/bntMultiplied_main"
@@ -27,7 +27,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:text="Multiplied"
+            android:text="@string/op_multiplied"
             />
     <Button
             android:id="@+id/bntDivided_main"
@@ -35,7 +35,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:text="Divided"
+            android:text="@string/op_divided"
             />
     <Button
             android:id="@+id/bntInverse_main"
@@ -43,7 +43,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:text="Inverse"
+            android:text="@string/op_inverse"
             />
 </LinearLayout>
 

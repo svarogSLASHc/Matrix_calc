@@ -14,14 +14,14 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_toRightOf="@id/sp_matrix_size_matrix_activity"
-        android:text="Calc" />
+        android:text="@string/op_calc" />
 
     <Button
         android:id="@+id/btn_clear_matrix_activity"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_toRightOf="@id/btn_calc_matrix_activity"
-        android:text="Clear" />
+        android:text="@string/op_clear"  />
 
     <RadioGroup
         android:id="@+id/rg_matrix_switcher"
@@ -35,7 +35,7 @@
             android:id="@+id/rb_check_first_matrix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="First Matrix"
+            android:text="@string/matrix_first"
             android:checked="true" />
 
         <RadioButton
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Second Matrix" />
+            android:text="@string/matrix_second" />
     </RadioGroup>
 
     <HorizontalScrollView

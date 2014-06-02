@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Матричний калькулятор</string>
+    <string name="op_sum">Сума</string>
+    <string name="op_minus">Різниця</string>
+    <string name="op_multiplied">Множення</string>
+    <string name="op_divided">Ділення</string>
+    <string name="op_inverse">Обернена</string>
+    <string name="op_calc">Результат</string>
+    <string name="op_clear">Очистити</string>
+    <string name="matrix_first">Перша матриця</string>
+    <string name="matrix_second">Друга матрицяx</string>
+</resources>
